@@ -2,54 +2,28 @@
 
 An end-to-end data engineering project built using **AWS S3, PostgreSQL (Neon), Databricks, dbt, and Apache Airflow**. The project focuses on incremental data ingestion, metadata-driven transformations, dimensional modeling, data quality testing, and automated pipeline orchestration.
 
+
 ## 🏗️ Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Sources["1. Data Sources"]
-        S3["AWS S3<br/>Customer Reviews"]
-        PG["PostgreSQL on Neon<br/>Walmart Dataset"]
-    end
-
-    subgraph Ingestion["2. Ingestion Layer"]
-        CDC["Query-Based<br/>CDC-Style Ingestion"]
-        REV["Customer Review<br/>Ingestion"]
-    end
-
-    subgraph Lakehouse["3. Databricks Lakehouse"]
-        BR["Bronze Layer<br/>Raw Delta Tables"]
-        ST["Silver Tech<br/>Incremental Models + Tests"]
-        SB["Silver Business<br/>Metadata-Driven SQL + Jinja"]
-        OBT["One Big Table (OBT)<br/>Dynamic SQL + Custom Tests"]
-        EP["Ephemeral Staging Models"]
-        GOLD["Gold Layer<br/>Dimensions + Fact Tables"]
-        SCD["SCD Type 2<br/>Historical Tracking"]
-    end
-
-    subgraph Orchestration["4. Orchestration"]
-        AF["Apache Airflow<br/>Custom Docker Image"]
-        SDK["Databricks Python SDK"]
-        DBT["dbt Core + Databricks Adapter"]
-    end
-
-    PG --> CDC
-    S3 --> REV
+    S3["AWS S3<br/>Customer Reviews"] --> BR["Databricks Bronze<br/>Delta Tables"]
+    PG["PostgreSQL on Neon<br/>Walmart Dataset"] --> CDC["Query-Based Incremental Ingestion"]
     CDC --> BR
-    REV --> BR
-    BR --> ST
-    ST --> SB
-    SB --> OBT
-    SB --> EP
-    EP --> GOLD
-    GOLD --> SCD
 
-    AF --> SDK
-    SDK --> BR
-    AF --> DBT
-    DBT -. "Runs transformations and tests" .-> ST
-    DBT -.-> SB
-    DBT -.-> GOLD
+    BR --> ST["Silver Tech<br/>Incremental dbt Models + Tests"]
+    ST --> SB["Silver Business<br/>Metadata-Driven SQL + Jinja"]
+    SB --> OBT["Dynamic OBT<br/>Custom Data Quality Tests"]
+    SB --> EP["Ephemeral Staging Models"]
+    EP --> GOLD["Gold Layer<br/>Dimensions + Fact Tables"]
+    GOLD --> SCD["SCD Type 2<br/>Historical Tracking"]
+
+    AF["Apache Airflow + Docker"] --> SDK["Databricks Python SDK"]
+    AF --> DBT["dbt Core + Databricks Adapter"]
+    SDK -. "Triggers ingestion" .-> BR
+    DBT -. "Orchestrates transformations and tests" .-> ST
 ```
+
 
 ## 🔄 Project Workflow
 
