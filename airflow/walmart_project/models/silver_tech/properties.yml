@@ -1,0 +1,53 @@
+
+models:
+  - name: products_t
+    description: "This model represents the products available in the Walmart inventory."
+
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product"
+        data_tests:
+          - not_null
+          - unique
+
+      - name: price
+        description: "Price of the product"
+        data_tests:
+          - not_null
+          
+
+  - name: orders_t
+    description: "This model represents the orders placed by customers in the Walmart system."
+
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order"
+        data_tests:
+          - not_null
+          - unique
+
+  - name: customers_t
+    description: "This model represents the customers who have placed orders in the Walmart system."
+    
+
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer"
+        data_tests:
+          - not_null
+          - unique
+      - name: city
+        description: "City where the customer resides"
+        data_tests:
+          - not_null
+      
+      - name: country
+        description: "Country where the customer resides"
+        data_tests:
+          - not_null
+
+ 
+ 
+ 
+
+ 
